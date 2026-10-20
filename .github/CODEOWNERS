@@ -1,0 +1,9 @@
+/backend/src/modules/auth/        @backend-dev
+/backend/src/modules/booking/     @backend-dev
+/backend/src/modules/payment/     @backend-dev
+/backend/src/modules/catalog/     @analyst
+/backend/src/modules/admin/       @analyst
+/backend/src/modules/notification/ @qa-devops
+/frontend/                        @frontend-dev
+/.github/                         @qa-devops
+/docs/                            @analyst
