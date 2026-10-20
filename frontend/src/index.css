@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* NFR-06: шрифт ≥ 16px, інтерактивні елементи ≥ 44×44px, контраст ≥ 4.5:1 (WCAG 2.1 AA) */
+html { font-size: 16px; }
+body { @apply bg-slate-50 text-slate-900; }
+
+@layer components {
+  .btn { @apply inline-flex min-h-[44px] min-w-[44px] items-center justify-center rounded-lg px-4 py-2 font-medium focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-brand-600; }
+  .btn-primary { @apply btn bg-brand-700 text-white hover:bg-brand-600; }
+  .btn-secondary { @apply btn border border-slate-400 bg-white text-slate-900 hover:bg-slate-100; }
+  .input { @apply min-h-[44px] w-full rounded-lg border border-slate-400 bg-white px-3 py-2; }
+  .card { @apply rounded-xl border border-slate-200 bg-white p-4 shadow-sm; }
+}
