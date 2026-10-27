@@ -1,3 +1,4 @@
+
 # SafeSpace
 
 Онлайн-платформа психологічної підтримки для молоді: зручний, анонімний та доступний шлях до кваліфікованої допомоги.
@@ -62,6 +63,56 @@ npm install
 npm run dev               # http://localhost:5173 (запити /api проксуються на :4000)
 npm run build
 ```
+
+## Інтеграція компонентів (лаб № 5)
+### Docker Compose (рекомендовано)
+```bash
+docker compose up --build
+# Frontend:  <http://localhost:8080>   (nginx; запити /api проксуються на backend)
+# Backend:   <http://localhost:4000/api/health>
+node scripts/smoke.mjs <http://localhost:8080>   # інтеграційна перевірка через frontend
+```
+Секрети беруться зі змінних середовища (`JWT_SECRET`, `ENCRYPTION_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`); значення за замовчуванням у compose — лише для локальної демонстрації.
+
+### Локально через npm
+```bash
+npm run install:all
+npm run build && npm test && npm run lint && npm run typecheck
+# термінал 1: cd backend && npm run dev      термінал 2: cd frontend && npm run dev
+npm run smoke -- <http://localhost:5173>            # через Vite-проксі
+```
+​
+## Управління залежностями
+- Кожен компонент має власні `package.json` + `package-lock.json`; CI та Docker використовують npm ci (відтворювані збірки за lock-файлом).
+- Версії синхронізовано: Node.js ≥ 20 (`engines`, CI, Docker-образи `node:20-alpine`), TypeScript ^5.4.5 в обох пакетах.
+- Dependabot (`.github/dependabot.ym`l) щотижня створює PR на оновлення npm-залежностей backend/frontend та GitHub Actions.
+- `npm run audit:all` — перевірка вразливостей; `npm run outdated:all` — застарілі пакети. Для backend виконано `npm audit fix` (0 вразливостей у prod-залежностях, виправлено `body-parser`).
+- Відомі залишки: `react-router-dom` 6.x має moderate-попередження (open redirect у `<Link>`, SSR-гідратація). Проєкт — чистий SPA без SSR і без переходів за користувацькими URL; оновлення до v7 — breaking change, винесено в дорожню карту.
+
+## Перевірка функціональних вимог
+
+| Вимога | Як перевірено | Де |
+|---|---|---|
+| FR-01 Реєстрація/вхід | наскрізний тест + smoke (реєстрація, login → JWT) | `tests/api.e2e.test.ts`, `scripts/smoke.mjs` |
+| FR-02, FR-03 Каталог, пошук, профіль | e2e + unit | `CatalogService.test.ts` |
+| FR-04, FR-07 Слоти й бронювання | e2e + unit | `Schedule.test.ts`, `BookingFlow.test.ts` |
+| FR-05 Email-сповіщення | події `session.confirmed`, `user.registered` → Notification | `BookingFlow.test.ts` |
+| FR-06 Оплата | `PaymentService` ↔ `BookingService` через подію `payment.succeeded` + вебхук | e2e |
+| FR-08, FR-09 Скасування, кабінет, нотатки | e2e | `Session.test.ts` |
+| FR-10–12 Модерація, скарги, блокування | unit | `Admin.test.ts` |
+
+Точки інтеграції між модулями: порти (AvailabilityProvider, ReviewReader, PaymentInitiator) та EventBus; збирання залежностей — у container.ts. Frontend ↔ backend — REST (/api, JWT у Authorization), опис — [docs/api.md](docs/api.md). 
+
+## Перевірка нефункціональних вимог
+
+| Вимога | Спосіб підтвердження |
+|---|---|
+| NFR-03 Безпека | JWT + RBAC (401/403 у smoke та e2e), bcrypt, AES-256-GCM для нотаток, Helmet, у production заборонені тестові ключі (`config/env.ts`) |
+| NFR-04 Надійність | єдиний формат помилок, `HEALTHCHECK` у Docker, `restart: unless-stopped` |
+| NFR-06 Зручність/доступність | frontend-маршрути, ProtectedRoute, адаптивний UI (Tailwind) |
+| NFR-08 Аудит | `GET /admin/audit`, запис дій адміністратора |
+| Якість/супровідність | CI: typecheck, lint, 55 тестів + coverage, build обох частин; SOLID-архітектура |
+| Портативність | один і той самий результат локально та в Docker |
 
 ## Принципи
 Код організовано за принципами SOLID: сервіси залежать від інтерфейсів (портів), а не від конкретних БД чи провайдерів;
