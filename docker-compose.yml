@@ -1,0 +1,24 @@
+# Локальна інтеграція: docker compose up --build
+# Frontend: http://localhost:8080  ·  Backend: http://localhost:4000/api/health
+services:
+  backend:
+    build: ./backend
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      JWT_SECRET: ${JWT_SECRET:-local-integration-secret-0123456789abcdef}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-a1b2c3d4e5f60718293a4b5c6d7e8f90a1b2c3d4e5f60718293a4b5c6d7e8f90}
+      CORS_ORIGIN: http://localhost:8080
+      PAYMENT_PROVIDER: fake
+      EMAIL_PROVIDER: console
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@safespace.local}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-ChangeMe123}
+    ports: ["4000:4000"]
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    depends_on:
+      backend: { condition: service_started }
+    ports: ["8080:80"]
+    restart: unless-stopped
