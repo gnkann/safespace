@@ -19,7 +19,7 @@ export class Validator {
     this.require(
       typeof value === 'string' && value.length >= 8 && /[A-Za-zА-Яа-яІіЇїЄє]/.test(value) && /\d/.test(value),
       'password',
-      'Пароль: щонайменше 8 символів, літери та цифри',
+      'Пароль: щонайменше 8 символів, має містити літери та цифри',
     );
     return this.require(value === confirm, 'passwordConfirm', 'Паролі не збігаються');
   }
