@@ -3,7 +3,7 @@
 Онлайн-платформа психологічної підтримки для молоді: зручний, анонімний та доступний шлях до кваліфікованої допомоги.
 Навчальний проєкт з дисципліни «Життєвий цикл розробки програмного забезпечення» (КПІ ім. Ігоря Сікорського, ІП-43).
 
-Поточний стан — **базова структура коду (лабораторна робота №4)**: класи, модулі та функції з мінімальним
+Поточний стан — **тестування та валідація (лабораторна робота №6)** поверх базової структури коду (лабораторна №4): класи, модулі та функції з мінімальним
 функціоналом відповідно до архітектури з лабораторної №2 (модульний моноліт). Усі модулі працюють
 на in-memory сховищах і заглушках зовнішніх сервісів; повна інтеграція — наступні етапи.
 
@@ -25,7 +25,7 @@ safespace/
 │   │   ├── container.ts     composition root (збирання залежностей)
 │   │   ├── app.ts           Express-застосунок
 │   │   └── server.ts        точка входу
-│   └── tests/               unit- та e2e-тести (Jest, Supertest)
+│   └── tests/               unit/ component/ system/ nfr/ + сервісні тести (Jest, Supertest)
 ├── frontend/                React + TypeScript + Tailwind (Vite)
 │   └── src/ {api, auth, components, pages}
 ├── docs/                    architecture.md, api.md, git-workflow.md
@@ -48,7 +48,8 @@ cd backend
 cp .env.example .env      # за потреби змініть значення
 npm install
 npm run dev               # http://localhost:4000, перевірка: GET /api/health
-npm test                  # 55 тестів
+npm test                  # 129 тестів (unit, component, system, NFR)
+npm run test:unit         # також test:component, test:system, test:nfr
 npm run test:coverage     # звіт про покриття
 npm run build && npm start
 ```
