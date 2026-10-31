@@ -11,9 +11,15 @@
     "typecheck": "tsc --noEmit",
     "lint": "eslint src tests --ext .ts",
     "test": "jest --runInBand",
-    "test:coverage": "jest --runInBand --coverage"
+    "test:coverage": "jest --runInBand --coverage",
+    "test:unit": "jest --runInBand tests/unit tests/AuthService.test.ts tests/Session.test.ts tests/Security.test.ts tests/Schedule.test.ts tests/CatalogService.test.ts tests/Admin.test.ts",
+    "test:component": "jest --runInBand tests/component tests/BookingFlow.test.ts",
+    "test:system": "jest --runInBand tests/system tests/api.e2e.test.ts",
+    "test:nfr": "jest --runInBand tests/nfr"
   },
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
