@@ -1,0 +1,17 @@
+{
+  "name": "safespace",
+  "version": "0.2.0",
+  "private": true,
+  "description": "SafeSpace — кореневі скрипти для інтеграції backend + frontend",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "install:all": "npm --prefix backend ci && npm --prefix frontend ci",
+    "typecheck": "npm --prefix backend run typecheck && npm --prefix frontend run typecheck",
+    "lint": "npm --prefix backend run lint",
+    "test": "npm --prefix backend test",
+    "build": "npm --prefix backend run build && npm --prefix frontend run build",
+    "smoke": "node scripts/smoke.mjs",
+    "audit:all": "npm --prefix backend audit --omit=dev; npm --prefix frontend audit --omit=dev",
+    "outdated:all": "npm --prefix backend outdated; npm --prefix frontend outdated"
+  }
+}
